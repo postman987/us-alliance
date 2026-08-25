@@ -12,7 +12,7 @@ export class JobsScheduler {
     private readonly logger: LoggerService,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_4_HOURS)
   async handleCron() {
     this.logger.log(
       'Running scheduled task worker to process created jobs...',
