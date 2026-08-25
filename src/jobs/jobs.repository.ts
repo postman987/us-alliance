@@ -21,6 +21,7 @@ export class JobsRepository {
   }
 
   async update(id: string, updatedFields: Partial<Job>): Promise<Job | null> {
+    if (!(await this.db.exists(`/jobs/${id}`))) return null;
     await this.db.push(`/jobs/${id}`, updatedFields, false);
     return this.findById(id);
   }
