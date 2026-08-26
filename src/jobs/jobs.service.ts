@@ -30,9 +30,14 @@ export class JobsService {
     return job;
   }
 
-  async listJobs(): Promise<Job[]> {
-    this.logger.log('Listing all jobs', 'JobsService');
-    return this.jobsRepository.findAll();
+  async listJobs(page = 1, count = 100): Promise<Job[]> {
+    this.logger.log(
+      `Listing jobs: page=${page}, count=${count}`,
+      'JobsService',
+    );
+    const jobs = await this.jobsRepository.findAll();
+    const start = (page - 1) * count;
+    return jobs.slice(start, start + count);
   }
 
   async getJobById(id: string): Promise<Job> {

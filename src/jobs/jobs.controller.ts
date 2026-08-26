@@ -22,6 +22,7 @@ import {
   ApiCreatedResponse,
 } from '@nestjs/swagger';
 import { JobResponseDto } from './dto/job-response.dto';
+import { ListJobsDto } from './dto/list-jobs.dto';
 
 @ApiTags('jobs')
 @Controller('jobs')
@@ -37,10 +38,10 @@ export class JobsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'List all jobs' })
+  @ApiOperation({ summary: 'List jobs with pagination' })
   @ApiOkResponse({ type: JobResponseDto, isArray: true })
-  async findAll(): Promise<Job[]> {
-    return this.jobsService.listJobs();
+  async findAll(@Query() listJobsDto: ListJobsDto): Promise<Job[]> {
+    return this.jobsService.listJobs(listJobsDto.page, listJobsDto.count);
   }
 
   @Get('search')

@@ -97,6 +97,21 @@ describe('JobsService (Integration with real repository)', () => {
       expect(result.find((j) => j.id === job1.id)).toBeDefined();
       expect(result.find((j) => j.id === job2.id)).toBeDefined();
     });
+
+    it('should return the requested page of jobs', async () => {
+      const jobs = await Promise.all(
+        [1, 2, 3].map((index) =>
+          service.createJob({
+            title: `Job ${index}`,
+            description: `Desc ${index}`,
+          }),
+        ),
+      );
+
+      const result = await service.listJobs(2, 1);
+
+      expect(result).toEqual([jobs[1]]);
+    });
   });
 
   describe('getJobById', () => {

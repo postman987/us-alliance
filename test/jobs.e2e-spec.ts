@@ -107,6 +107,7 @@ describe('JobsController (e2e)', () => {
     it('GET /jobs should return list containing the created job', async () => {
       const response = await request(app.getHttpServer())
         .get('/jobs')
+        .query({ page: 1, count: 100 })
         .expect(200);
 
       const jobs = response.body as Job[];
@@ -115,6 +116,44 @@ describe('JobsController (e2e)', () => {
       const found = jobs.find((j) => j.id === createdJobId);
       expect(found).toBeDefined();
       expect(found!.title).toBe('Learn NestJS');
+    });
+
+    it('GET /jobs should paginate jobs from page 1 with a default count of 100', async () => {
+      for (let i = 0; i < 2; i += 1) {
+        await request(app.getHttpServer())
+          .post('/jobs')
+          .send({
+            title: `Pagination Job ${i}`,
+            description: 'Pagination test job',
+          });
+      }
+
+      const firstPage = await request(app.getHttpServer())
+        .get('/jobs')
+        .query({ page: 1, count: 1 })
+        .expect(200);
+      const secondPage = await request(app.getHttpServer())
+        .get('/jobs')
+        .query({ page: 2, count: 1 })
+        .expect(200);
+
+      const firstPageJobs = firstPage.body as Job[];
+      const secondPageJobs = secondPage.body as Job[];
+      expect(firstPageJobs).toHaveLength(1);
+      expect(secondPageJobs).toHaveLength(1);
+      expect(secondPageJobs[0].id).not.toBe(firstPageJobs[0].id);
+    });
+
+    it('GET /jobs should reject invalid pagination parameters', async () => {
+      await request(app.getHttpServer())
+        .get('/jobs')
+        .query({ page: 0, count: 100 })
+        .expect(400);
+
+      await request(app.getHttpServer())
+        .get('/jobs')
+        .query({ page: 1, count: 101 })
+        .expect(400);
     });
 
     it('GET /jobs/:id should return the correct job', async () => {
