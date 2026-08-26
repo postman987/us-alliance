@@ -4,7 +4,7 @@ import * as path from 'path';
 import { Job, JobRecord } from '../jobs/interfaces/job.interface';
 
 async function seed() {
-  console.log('Seeding 1000 randomized jobs...');
+  console.log('Seeding 100000 randomized jobs...');
   const dbPath = path.resolve(process.cwd(), 'jobs');
   const db = new JsonDB(new Config(dbPath, true, true, '/'));
 
@@ -39,7 +39,7 @@ async function seed() {
   ];
 
   const jobs: JobRecord = {};
-  for (let i = 1; i <= 1000; i++) {
+  for (let i = 1; i <= 100000; i++) {
     const verb = verbs[Math.floor(Math.random() * verbs.length)];
     const noun = nouns[Math.floor(Math.random() * nouns.length)];
     const id = randomUUID();
@@ -53,7 +53,7 @@ async function seed() {
   }
 
   await db.push('/jobs', jobs, true);
-  console.log('Successfully seeded 1000 randomized jobs.');
+  console.log('Successfully seeded 100000 randomized jobs.');
 }
 
 void seed();
