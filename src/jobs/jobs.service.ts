@@ -103,10 +103,10 @@ export class JobsService {
     return { success: true };
   }
 
-  async getCreatedJobs(): Promise<Job[]> {
+  async getCreatedJobs(limit = 100): Promise<Job[]> {
     this.logger.log('Retrieving jobs with status "created"', 'JobsService');
     return this.mutex.runExclusive(() =>
-      this.jobsRepository.filter((job) => job.status === 'created'),
+      this.jobsRepository.filter((job) => job.status === 'created', limit),
     );
   }
 

@@ -7,6 +7,8 @@ import { DatabaseMutex } from '../database/database-mutex';
 
 @Injectable()
 export class JobsScheduler {
+  private static readonly BATCH_SIZE = 100;
+
   constructor(
     private readonly jobsService: JobsService,
     private readonly jobsRepository: JobsRepository,
@@ -22,7 +24,9 @@ export class JobsScheduler {
         'JobsScheduler',
       );
       try {
-        const createdJobs = await this.jobsService.getCreatedJobs();
+        const createdJobs = await this.jobsService.getCreatedJobs(
+          JobsScheduler.BATCH_SIZE,
+        );
         if (createdJobs.length === 0) {
           this.logger.log('No created jobs found to process.', 'JobsScheduler');
           return;

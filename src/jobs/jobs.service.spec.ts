@@ -135,6 +135,24 @@ describe('JobsService (Integration with real repository)', () => {
     });
   });
 
+  describe('getCreatedJobs', () => {
+    it('should return at most 100 jobs for scheduler processing', async () => {
+      const jobs: JobRecord = {};
+      for (let index = 0; index < 101; index += 1) {
+        const id = `created-job-${index}`;
+        jobs[id] = {
+          id,
+          title: `Job ${index}`,
+          description: 'Created job',
+          status: 'created',
+        };
+      }
+      await db.push('/jobs', jobs, true);
+
+      await expect(service.getCreatedJobs()).resolves.toHaveLength(100);
+    });
+  });
+
   describe('editJob', () => {
     it('should update job details if found and not completed', async () => {
       const job = await service.createJob({

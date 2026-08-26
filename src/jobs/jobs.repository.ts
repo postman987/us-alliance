@@ -38,8 +38,16 @@ export class JobsRepository {
     return true;
   }
 
-  async filter(predicate: (job: Job) => boolean): Promise<Job[]> {
+  async filter(
+    predicate: (job: Job) => boolean,
+    limit = Number.POSITIVE_INFINITY,
+  ): Promise<Job[]> {
     const jobs = await this.db.getObject<JobRecord>('/jobs');
-    return Object.values(jobs).filter(predicate);
+    const matchingJobs: Job[] = [];
+    for (const job of Object.values(jobs)) {
+      if (predicate(job)) matchingJobs.push(job);
+      if (matchingJobs.length >= limit) break;
+    }
+    return matchingJobs;
   }
 }
