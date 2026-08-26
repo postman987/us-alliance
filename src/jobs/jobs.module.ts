@@ -5,6 +5,7 @@ import { JobsController } from './jobs.controller';
 import { JobsService } from './jobs.service';
 import { JobsRepository } from './jobs.repository';
 import { JobsScheduler } from './jobs.scheduler';
+import { DatabaseMutex } from '../database/database-mutex';
 
 @Module({
   controllers: [JobsController],
@@ -24,6 +25,7 @@ import { JobsScheduler } from './jobs.scheduler';
     JobsService,
     JobsRepository,
     JobsScheduler,
+    DatabaseMutex,
   ],
   exports: [JobsService, JobsRepository, 'JSON_DB'],
 })

@@ -9,6 +9,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { JsonDB, Config } from 'node-json-db';
 import * as path from 'path';
 import * as fs from 'fs';
+import { DatabaseMutex } from '../database/database-mutex';
 
 describe('JobsService (Integration with real repository)', () => {
   let service: JobsService;
@@ -45,6 +46,7 @@ describe('JobsService (Integration with real repository)', () => {
           },
         },
         { provide: LoggerService, useValue: mockLoggerService },
+        DatabaseMutex,
       ],
     }).compile();
 
