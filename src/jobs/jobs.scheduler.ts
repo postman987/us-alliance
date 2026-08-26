@@ -7,7 +7,7 @@ import { DatabaseMutex } from '../database/database-mutex';
 
 @Injectable()
 export class JobsScheduler {
-  private static readonly BATCH_SIZE = 100;
+  private static readonly BATCH_SIZE = 20;
 
   constructor(
     private readonly jobsService: JobsService,
@@ -16,7 +16,7 @@ export class JobsScheduler {
     private readonly mutex: DatabaseMutex,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
     return this.mutex.runExclusive(async () => {
       this.logger.log(
