@@ -2,13 +2,19 @@
 
 ## 실행 방법
 
+- 의존성 설치
+
+```
+yarn install
+```
+
 - 실행
 
 ```
 yarn run start
 ```
 
-- seed 데이터 생성(1000건)
+- seed 데이터 생성(100000건)
 
 ```
 yarn run seed
