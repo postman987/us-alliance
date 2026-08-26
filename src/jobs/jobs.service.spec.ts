@@ -52,14 +52,12 @@ describe('JobsService (Integration with real repository)', () => {
   });
 
   afterEach(async () => {
-    // Clear out test data after each test
     if (db && (await db.exists('/jobs'))) {
       await db.push('/jobs', {}, true);
     }
   });
 
   afterAll(() => {
-    // Final clean up of test database files
     const dbFile = `${dbPath}.json`;
     if (fs.existsSync(dbFile)) {
       fs.unlinkSync(dbFile);
@@ -77,7 +75,6 @@ describe('JobsService (Integration with real repository)', () => {
       expect(result.description).toBe(dto.description);
       expect(result.status).toBe('created');
 
-      // Verify it was actually written to the database
       const dbJob = await service.getJobById(result.id);
       expect(dbJob).toEqual(result);
     });
