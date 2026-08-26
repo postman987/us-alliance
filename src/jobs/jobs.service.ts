@@ -110,25 +110,31 @@ export class JobsService {
     );
   }
 
-  async searchJobs(q: string, type: 'title' | 'status'): Promise<Job[]> {
+  async searchJobs(
+    q: string,
+    type: 'title' | 'status',
+    page = 1,
+    count = 100,
+  ): Promise<Job[]> {
     this.logger.log(
       `Searching jobs by ${type} with query: "${q}"`,
       'JobsService',
     );
     const query = q.toLowerCase();
 
-    if (type === 'title') {
-      return this.mutex.runExclusive(() =>
-        this.jobsRepository.filter((job) =>
-          job.title.toLowerCase().includes(query),
-        ),
-      );
-    } else if (type === 'status') {
-      return this.mutex.runExclusive(() =>
-        this.jobsRepository.filter((job) => job.status.toLowerCase() === query),
-      );
-    }
-
-    return [];
+    return this.mutex.runExclusive(async () => {
+      const jobs =
+        type === 'title'
+          ? await this.jobsRepository.filter((job) =>
+              job.title.toLowerCase().includes(query),
+            )
+          : type === 'status'
+            ? await this.jobsRepository.filter(
+                (job) => job.status.toLowerCase() === query,
+              )
+            : [];
+      const start = (page - 1) * count;
+      return jobs.slice(start, start + count);
+    });
   }
 }

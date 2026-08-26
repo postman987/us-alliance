@@ -49,7 +49,12 @@ export class JobsController {
   @ApiOkResponse({ type: JobResponseDto, isArray: true })
   @ApiBadRequestResponse({ description: 'Invalid search parameters' })
   async search(@Query() searchJobsDto: SearchJobsDto): Promise<Job[]> {
-    return this.jobsService.searchJobs(searchJobsDto.q, searchJobsDto.type);
+    return this.jobsService.searchJobs(
+      searchJobsDto.q,
+      searchJobsDto.type,
+      searchJobsDto.page,
+      searchJobsDto.count,
+    );
   }
 
   @Get(':id')
